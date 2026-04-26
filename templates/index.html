@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YTDL — YouTube Downloader</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #0b0b0d;
+            --bg-soft: #111214;
+            --panel: #15161a;
+            --panel-2: #0f1013;
+            --border: #2a2d34;
+            --text: #f5f5f7;
+            --muted: #9aa0aa;
+            --red: #ff0033;
+            --red-2: #ff2a55;
+            --white: #ffffff;
+            --shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            min-height: 100%;
+        }
+
+        body {
+            font-family: "DM Mono", monospace;
+            color: var(--text);
+            background:
+                radial-gradient(circle at top, rgba(255, 0, 51, 0.18), transparent 30%),
+                linear-gradient(180deg, #09090b 0%, #0d0e11 50%, #08080a 100%);
+            display: grid;
+            place-items: center;
+            padding: 24px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+            background-size: 32px 32px;
+            opacity: 0.25;
+            pointer-events: none;
+            mask-image: radial-gradient(circle at center, black 35%, transparent 85%);
+        }
+
+        .app {
+            width: 100%;
+            max-width: 780px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)), var(--panel);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+
+        .app::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--red), #ff5a5a, var(--red-2));
+        }
+
+        .hero {
+            padding: 34px 34px 26px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logo {
+            width: 64px;
+            height: 44px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, var(--red), var(--red-2));
+            display: grid;
+            place-items: center;
+            box-shadow: 0 12px 28px rgba(255, 0, 51, 0.35);
+            flex-shrink: 0;
+        }
+
+        .logo svg {
+            width: 24px;
+            height: 24px;
+            fill: white;
+            margin-left: 2px;
+        }
+
+        .eyebrow {
+            display: inline-block;
+            font-size: 12px;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: #ff8ca3;
+            margin-bottom: 6px;
+        }
+
+        h1 {
+            margin: 0;
+            font-family: "Bebas Neue", sans-serif;
+            font-size: 68px;
+            line-height: 0.9;
+            letter-spacing: 0.04em;
+        }
+
+        .subtitle {
+            margin: 10px 0 0;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.7;
+            max-width: 560px;
+        }
+
+        .badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .badge {
+            padding: 8px 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.03);
+            color: #d8dbe2;
+            font-size: 12px;
+        }
+
+        .content {
+            padding: 28px 34px 34px;
+        }
+
+        form {
+            display: grid;
+            gap: 10px;
+        }
+
+        .label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            color: #c8ccd3;
+        }
+
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 12px;
+        }
+
+        input {
+            width: 100%;
+            height: 58px;
+            padding: 0 18px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            background: var(--panel-2);
+            color: var(--white);
+            font-family: inherit;
+            font-size: 15px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+        }
+
+        input::placeholder {
+            color: #6f7783;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: rgba(255, 0, 51, 0.8);
+            box-shadow: 0 0 0 4px rgba(255, 0, 51, 0.14);
+            transform: translateY(-1px);
+        }
+
+        button {
+            height: 58px;
+            padding: 0 22px;
+            border: none;
+            border-radius: 16px;
+            background: linear-gradient(135deg, var(--red), var(--red-2));
+            color: white;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            cursor: pointer;
+            white-space: nowrap;
+            box-shadow: 0 12px 28px rgba(255, 0, 51, 0.28);
+            transition: transform 0.18s ease, filter 0.18s ease, box-shadow 0.18s ease;
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+            filter: brightness(1.06);
+            box-shadow: 0 16px 30px rgba(255, 0, 51, 0.35);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        @media (max-width: 720px) {
+            .hero,
+            .content {
+                padding: 24px;
+            }
+
+            .brand {
+                align-items: flex-start;
+            }
+
+            h1 {
+                font-size: 54px;
+            }
+
+            .input-row {
+                grid-template-columns: 1fr;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app">
+        <section class="hero">
+            <div class="brand">
+                <div class="logo" aria-hidden="true">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M8 6.5v11l9-5.5-9-5.5z"></path>
+                    </svg>
+                </div>
+
+                <div>
+                    <div class="eyebrow">YouTube Downloader</div>
+                    <h1>YTDL</h1>
+                    <p class="subtitle">
+                        Download YouTube videos with a cleaner interface built for links and Shorts.
+                    </p>
+                </div>
+            </div>
+
+            <div class="badges">
+                <div class="badge">WEBM Output</div>
+                <div class="badge">Shorts Ready</div>
+                <div class="badge">Fast Input</div>
+            </div>
+        </section>
+
+        <section class="content">
+            <form method="POST">
+                <label class="label" for="url">Paste YouTube URL</label>
+
+                <div class="input-row">
+                    <input
+                        id="url"
+                        type="text"
+                        name="url"
+                        placeholder="https://youtube.com/watch?v=..."
+                        required
+                        autocomplete="off"
+                        spellcheck="false"
+                    >
+
+                    <button type="submit">
+                        DOWNLOAD WEBM
+                    </button>
+                </div>
+            </form>
+        </section>
+    </div>
+
+</body>
+</html>
