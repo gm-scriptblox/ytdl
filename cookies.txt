@@ -1,0 +1,7 @@
+ydl_opts = {
+    "outtmpl": os.path.join(DOWNLOAD_PATH, "%(title)s.%(ext)s"),
+    "format": "bestvideo[ext=webm]+bestaudio[ext=webm]/best[ext=webm]/best",
+    "merge_output_format": "webm",
+
+    "cookiefile": "cookies.txt"
+  } 
